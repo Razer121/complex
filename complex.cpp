@@ -1,170 +1,159 @@
+#include "complex.h"
+
 #include <iostream>
-#include <numeric>
+#include <cmath>
 
-using namespace std;
+using namespace std::literals;
 
-class Rational {
-public:
-    Rational() = default;
+Complex::Complex() = default;
 
-    Rational(int value)
-        : numerator_(value)
-        , denominator_(1) {
-    }
-
-    Rational(int numerator, int denominator)
-        : numerator_(numerator)
-        , denominator_(denominator)
-    {
-		if (denominator == 0) {
-			throw domain_error("Знаменатель не может быть нулем"s);
-		}
-        Normalize();
-    }
-
-    int Numerator() const {
-        return numerator_;
-    }
-
-    int Denominator() const {
-        return denominator_;
-    }
-
-    Rational& operator+=(Rational right) {
-        numerator_ = numerator_ * right.denominator_ + right.numerator_ * denominator_;
-        denominator_ *= right.denominator_;
-        Normalize();
-        return *this;
-    }
-
-    Rational& operator-=(Rational right) {
-        numerator_ = numerator_ * right.denominator_ - right.numerator_ * denominator_;
-        denominator_ *= right.denominator_;
-        Normalize();
-        return *this;
-    }
-
-    Rational& operator*=(Rational right) {
-        numerator_ *= right.numerator_;
-        denominator_ *= right.denominator_;
-        Normalize();
-        return *this;
-    }
-
-    Rational& operator/=(Rational right) {
-		if (right.numerator_ == 0) {
-			throw invalid_argument("На ноль делить нельзя"s);
-		}
-        numerator_ *= right.denominator_;
-        denominator_ *= right.numerator_;
-        Normalize();
-        return *this;
-    }
-
-private:
-    void Normalize() {
-        if (denominator_ < 0) {
-            numerator_ = -numerator_;
-            denominator_ = -denominator_;
-        }
-        int n = gcd(numerator_, denominator_);
-        numerator_ /= n;
-        denominator_ /= n;
-    }
-
-    int numerator_ = 0;
-    int denominator_ = 1;
-};
-
-ostream& operator<<(ostream& output, Rational rational) {
-    return output << rational.Numerator() << '/' << rational.Denominator();
+Complex::Complex(const Complex& complex) {
+    this->real = complex.real;
+    this->imagine = complex.imagine;
 }
 
-istream& operator>>(istream& input, Rational& rational) {
-    int numerator;
-    int denominator;
-    char slash;
-    if ((input >> numerator) && (input >> slash) && (slash == '/') && (input >> denominator)) {
-        rational = Rational{numerator, denominator};
-    }
-    return input;
+Complex::Complex(double real, double imagine) 
+: real(real), imagine(imagine) {}
+
+Complex& Complex::operator+=(const Complex& right) {
+    real += right.real;
+    imagine += right.imagine;
+    return *this;
 }
 
-// Unary plus and minus
-
-Rational operator+(Rational value) {
-    return value;
+Complex& Complex::operator-=(const Complex& right) {
+    real -= right.real;
+    imagine -= right.imagine;
+    return *this;
 }
 
-Rational operator-(Rational value) {
-    return {-value.Numerator(), value.Denominator()};
+Complex& Complex::operator*=(const Complex& right) {
+    real = real * right.real - imagine * right.imagine;
+    imagine = real * right.imagine + imagine * right.real;
+    return *this;
 }
 
-// Binary arithmetic operations
+Complex& Complex::operator/=(const Complex& right) {
+    real = (real * right.real + imagine * right.imagine) / 
+    (pow(right.real, 2) + pow(right.imagine, 2));
 
-Rational operator+(Rational left, Rational right) {
+    imagine = (right.real * imagine - real * right.imagine) /
+    (pow(right.real, 2) + pow(right.imagine, 2));
+    return *this;
+}
+
+Complex& Complex::operator+=(const double& right) {
+    real += right;
+    return *this;
+}
+Complex& Complex::operator-=(const double& right) {
+    real -= right;
+    return *this;
+}    
+Complex& Complex::operator*=(const double& right) {
+    real *= right;
+    imagine *= right;
+    return *this;
+}        
+Complex& Complex::operator/=(const double& right) {
+    real /= right;
+    imagine /= right;
+    return *this;
+}    
+
+Complex operator+(Complex left, Complex right) {
     return left += right;
 }
 
-Rational operator-(Rational left, Rational right) {
+Complex operator-(Complex left, Complex right) {
     return left -= right;
 }
 
-Rational operator*(Rational left, Rational right) {
+Complex operator*(Complex left, Complex right) {
     return left *= right;
 }
 
-Rational operator/(Rational left, Rational right) {
-	if (right.Numerator() == 0) {
-		throw invalid_argument("На ноль делить нельзя"s);
-	}
+Complex operator/(Complex left, Complex right) {
     return left /= right;
 }
 
-// Comparison operators
-
-bool operator==(Rational left, Rational right) {
-    return left.Numerator() == right.Numerator() &&
-           left.Denominator() == right.Denominator();
+Complex operator+(Complex left, double right) {
+    return left += right;
 }
 
-bool operator!=(Rational left, Rational right) {
-    return !(left == right);
+Complex operator-(Complex left, double right) {
+    return left -= right;
 }
 
-bool operator<(Rational left, Rational right) {
-    return left.Numerator() * right.Denominator() < 
-           left.Denominator() * right.Numerator();
+Complex operator*(Complex left, double right) {
+    return left *= right;
 }
 
-bool operator>(Rational left, Rational right) {
-    return left.Numerator() * right.Denominator() >
-           left.Denominator() * right.Numerator();
+Complex operator/(Complex left, double right) {
+    return left /= right;
 }
 
-bool operator>=(Rational left, Rational right) {
-    return !(left < right);
+
+Complex operator+(double left, Complex right) {
+    return right += left;
 }
 
-bool operator<=(Rational left, Rational right) {
-    return !(left > right);
+Complex operator-(double left, Complex right) {
+    right -= left;
+    right *= -1;
+    return right;
 }
 
-int main() {
-    try {
-        const Rational three_fifth{3, 5};
-        const Rational zero;
-        cout << three_fifth << " / " << zero << " = " << (three_fifth / zero) << endl;
-    } catch (const invalid_argument& e) {
-        cout << "Ошибка: "s << e.what() << endl;
+Complex operator*(double left, Complex right) {
+    return right *= left;
+}
+
+Complex& Complex::operator=(const Complex& right) {
+    real = right.real;
+    imagine = right.imagine;
+    return *this;
+}
+
+Complex operator+(Complex complex) {
+    return complex;
+}
+
+Complex operator-(Complex complex) {
+    complex.real *= -1;
+    complex.imagine *= -1;
+    return complex;
+}
+
+bool operator==(const Complex& left, const Complex& right) {
+    return (left.real == right.real && left.imagine == right.imagine);
+}
+
+bool operator!=(const Complex& left, const Complex& right) {
+    return left.real != right.real || left.imagine != right.imagine;
+}
+
+double Complex::Abs() const {
+    return sqrt(pow(real, 2) + pow(imagine, 2));
+}
+
+std::istream& operator>>(std::istream& is, Complex& complex) {
+    double real = NAN;
+    double imagine = NAN;
+    std::cout << "Введите действительную часть:"s;
+    is >> real;
+    std::cout << "Введите мнимую часть:"s;
+    is >> imagine;
+    complex = Complex{real, imagine};
+    return is;
+}
+
+std::ostream& operator<<(std::ostream& os, const Complex& complex) {
+    os << complex.real;
+    if(complex.imagine > 0) {
+        os << " + "s << complex.imagine;
     }
-
-    try {
-        Rational value{3, 5};
-        value /= Rational();
-        // Следующая строка не должна выполниться
-        cout << value << endl;
-    } catch (const invalid_argument& e) {
-        cout << "Ошибка: "s << e.what() << endl;
+    else {
+        os << " - "s << std::abs(complex.imagine);
     }
-} 
+    return os;
+}
