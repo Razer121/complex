@@ -7,10 +7,8 @@ using namespace std::literals;
 
 Complex::Complex() = default;
 
-Complex::Complex(const Complex& complex) {
-    this->real = complex.real;
-    this->imagine = complex.imagine;
-}
+Complex::Complex(const Complex& complex)
+    :real(complex.real), imagine(complex.imagine) {}
 
 Complex::Complex(double real, double imagine) 
 : real(real), imagine(imagine) {}

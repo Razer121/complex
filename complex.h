@@ -1,5 +1,5 @@
-#ifndef complex
-#define complex
+#ifndef COMPLEXH
+#define COMPLEXH
 
 #include <iostream>
 
@@ -58,5 +58,8 @@ bool operator!=(const Complex& left, const Complex& right);
 
 std::ostream& operator<<(std::ostream& os, const Complex& complex);
 std::istream& operator>>(std::istream& is, Complex& complex);
+
+
+#include "complex.cpp"
 
 #endif
