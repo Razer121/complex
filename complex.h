@@ -1,5 +1,5 @@
-#ifndef huawei-projects/complex
-#define huawei-projects/complex
+#ifndef complex
+#define complex
 
 #include <iostream>
 
@@ -58,8 +58,5 @@ bool operator!=(const Complex& left, const Complex& right);
 
 std::ostream& operator<<(std::ostream& os, const Complex& complex);
 std::istream& operator>>(std::istream& is, Complex& complex);
-
-
-#include "complex.cpp"
 
 #endif
