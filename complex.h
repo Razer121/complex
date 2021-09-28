@@ -1,5 +1,5 @@
-#ifndef COMPLEX
-#define COMPLEX
+#ifndef huawei-projects/complex
+#define huawei-projects/complex
 
 #include <iostream>
 
