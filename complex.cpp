@@ -18,19 +18,16 @@ Complex& Complex::operator+=(const Complex& right) {
     imagine += right.imagine;
     return *this;
 }
-
 Complex& Complex::operator-=(const Complex& right) {
     real -= right.real;
     imagine -= right.imagine;
     return *this;
 }
-
 Complex& Complex::operator*=(const Complex& right) {
     real = real * right.real - imagine * right.imagine;
     imagine = real * right.imagine + imagine * right.real;
     return *this;
 }
-
 Complex& Complex::operator/=(const Complex& right) {
     real = (real * right.real + imagine * right.imagine) / 
     (pow(right.real, 2) + pow(right.imagine, 2));
@@ -40,70 +37,68 @@ Complex& Complex::operator/=(const Complex& right) {
     return *this;
 }
 
-Complex& Complex::operator+=(const double& right) {
+Complex& Complex::operator+=(double right) {
     real += right;
     return *this;
 }
-Complex& Complex::operator-=(const double& right) {
+Complex& Complex::operator-=(double right) {
     real -= right;
     return *this;
 }    
-Complex& Complex::operator*=(const double& right) {
+Complex& Complex::operator*=(double right) {
     real *= right;
     imagine *= right;
     return *this;
 }        
-Complex& Complex::operator/=(const double& right) {
+Complex& Complex::operator/=(double right) {
     real /= right;
     imagine /= right;
     return *this;
 }    
 
-Complex operator+(Complex left, Complex right) {
-    return left += right;
+Complex Complex::operator+(const Complex& right) const {
+    return Complex(real + right.real, imagine + right.imagine);
+}
+Complex Complex::operator-(const Complex& right) const {
+    return Complex(real - right.real, imagine - right.imagine);;
+}
+Complex Complex::operator*(const Complex& right) const {
+    return Complex(real * right.real - imagine * right.imagine, 
+                    real * right.imagine + imagine * right.real);
+}
+Complex Complex::operator/(const Complex& right) const {
+    double tmp_real = (real * right.real + imagine * right.imagine) / 
+                            (pow(right.real, 2) + pow(right.imagine, 2));
+    double tmp_imagine = (right.real * imagine - real * right.imagine) /
+                            (pow(right.real, 2) + pow(right.imagine, 2));
+    return Complex(tmp_real, tmp_imagine);
 }
 
-Complex operator-(Complex left, Complex right) {
-    return left -= right;
+Complex Complex::operator+(double right) const{
+    return Complex(real + right, imagine);
+}
+Complex Complex::operator-(double right) const{
+    return Complex(real - right, imagine);
+}
+Complex Complex::operator*(double right) const{
+    return Complex(real * right, imagine * right);
+}
+Complex Complex::operator/(double right) const{
+    return Complex(real / right, imagine / right);
 }
 
-Complex operator*(Complex left, Complex right) {
-    return left *= right;
+Complex Complex::operator+() const{
+    return Complex(real, imagine);
+}
+Complex Complex::operator-() const{
+    return Complex(real * -1, imagine * -1);
 }
 
-Complex operator/(Complex left, Complex right) {
-    return left /= right;
+bool Complex::operator==(const Complex& right) const{
+    return (real == right.real && imagine == right.imagine);
 }
-
-Complex operator+(Complex left, double right) {
-    return left += right;
-}
-
-Complex operator-(Complex left, double right) {
-    return left -= right;
-}
-
-Complex operator*(Complex left, double right) {
-    return left *= right;
-}
-
-Complex operator/(Complex left, double right) {
-    return left /= right;
-}
-
-
-Complex operator+(double left, Complex right) {
-    return right += left;
-}
-
-Complex operator-(double left, Complex right) {
-    right -= left;
-    right *= -1;
-    return right;
-}
-
-Complex operator*(double left, Complex right) {
-    return right *= left;
+bool Complex::operator!=(const Complex& right) const{
+    return real != right.real || imagine != right.imagine;
 }
 
 Complex& Complex::operator=(const Complex& right) {
@@ -112,26 +107,18 @@ Complex& Complex::operator=(const Complex& right) {
     return *this;
 }
 
-Complex operator+(Complex complex) {
-    return complex;
-}
-
-Complex operator-(Complex complex) {
-    complex.real *= -1;
-    complex.imagine *= -1;
-    return complex;
-}
-
-bool operator==(const Complex& left, const Complex& right) {
-    return (left.real == right.real && left.imagine == right.imagine);
-}
-
-bool operator!=(const Complex& left, const Complex& right) {
-    return left.real != right.real || left.imagine != right.imagine;
-}
-
 double Complex::Abs() const {
     return sqrt(pow(real, 2) + pow(imagine, 2));
+}
+
+Complex operator+(double left, const Complex& right) {
+    return Complex(right.real + left, right.imagine);
+}
+Complex operator-(double left, const Complex& right) {
+    return Complex(left - right.real, right.imagine * (-1));
+}
+Complex operator*(double left, const Complex& right) {
+    return Complex(left * right.real, left * right.imagine);
 }
 
 std::istream& operator>>(std::istream& is, Complex& complex) {

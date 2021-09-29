@@ -1,5 +1,5 @@
-#ifndef COMPLEXH
-#define COMPLEXH
+#ifndef COMPLEX_COMPLEXH
+#define COMPLEX_COMPLEXH
 
 #include <iostream>
 
@@ -16,10 +16,26 @@ struct Complex {
     Complex& operator*=(const Complex& right);
     Complex& operator/=(const Complex& right);
 
-    Complex& operator+=(const double& right);
-    Complex& operator-=(const double& right);
-    Complex& operator*=(const double& right);
-    Complex& operator/=(const double& right);
+    Complex& operator+=(double right);
+    Complex& operator-=(double right);
+    Complex& operator*=(double right);
+    Complex& operator/=(double right);
+
+    Complex operator+() const;
+    Complex operator-() const;
+
+    Complex operator+(const Complex& right) const;
+    Complex operator-(const Complex& right) const;
+    Complex operator*(const Complex& right) const;
+    Complex operator/(const Complex& right) const;
+
+    Complex operator+(double right) const;
+    Complex operator-(double right) const;
+    Complex operator*(double right) const;
+    Complex operator/(double right) const;
+
+    bool operator==(const Complex& right) const;
+    bool operator!=(const Complex& right) const;
 
     Complex& operator=(const Complex& right);
 
@@ -28,38 +44,11 @@ struct Complex {
     ~Complex() {}
 };
 
-// Unary plus and minus
-
-Complex operator+(Complex complex);
-Complex operator-(Complex complex);
-
-// Binary arithmetic operations
-
-Complex operator+(Complex left, Complex right);
-Complex operator-(Complex left, Complex right);
-Complex operator*(Complex left, Complex right);
-Complex operator/(Complex left, Complex right);
-
-Complex operator+(Complex left, double right);
-Complex operator-(Complex left, double right);
-Complex operator*(Complex left, double right);
-Complex operator/(Complex left, double right);
-
-Complex operator+(double left, Complex right);
-Complex operator-(double left, Complex right);
-Complex operator*(double left, Complex right);
-
-// Comparison operators
-
-bool operator==(const Complex& left, const Complex& right);
-bool operator!=(const Complex& left, const Complex& right);
-
-// input output operations
+Complex operator+(double left, const Complex& right);
+Complex operator-(double left, const Complex& right);
+Complex operator*(double left, const Complex& right);
 
 std::ostream& operator<<(std::ostream& os, const Complex& complex);
 std::istream& operator>>(std::istream& is, Complex& complex);
-
-
-#include "complex.cpp"
 
 #endif
