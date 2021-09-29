@@ -1,3 +1,6 @@
+#ifndef COMPLEX_TESTS_FOR_COMPLEXH
+#define COMPLEX_TESTS_FOR_COMPLEXH
+
 #include "framework_for_unit_tests.h"
 #include "complex.h"
 #include <iostream>
@@ -41,3 +44,5 @@ void TestComplexClass() {
     TestAssignment();
     std::cerr << "Все тесты завершены корректно"s << std::endl;
 }
+
+#endif
